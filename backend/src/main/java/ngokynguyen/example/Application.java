@@ -1,13 +1,13 @@
-package ngokynguyen.example.Application;
+package ngokynguyen.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Application {
+class MainApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(MainApplication.class, args);
 	}
 
 }

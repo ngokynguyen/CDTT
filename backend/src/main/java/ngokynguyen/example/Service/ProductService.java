@@ -22,40 +22,51 @@ public class ProductService {
         this.categoryRepository = categoryRepository;
     }
 
+    // Lấy tất cả sản phẩm
     public List<Product> getAll() {
         return productRepository.findAll();
     }
 
+    // Lấy sản phẩm đang hoạt động
     public List<Product> getActiveProducts() {
         return productRepository.findByStatus(1);
     }
 
-    public Product getById(Integer id) {
+    // Lấy sản phẩm theo ID
+    public Product getProductById(Integer id) {
         return productRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy sản phẩm"));
+                        new RuntimeException(
+                                "Không tìm thấy sản phẩm có id: " + id
+                        )
+                );
     }
 
+    // Lấy sản phẩm theo slug
     public Product getBySlug(String slug) {
         return productRepository.findBySlug(slug)
                 .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy sản phẩm"));
+                        new RuntimeException(
+                                "Không tìm thấy sản phẩm"
+                        )
+                );
     }
 
+    // Lấy sản phẩm theo danh mục
     public List<Product> getByCategory(Integer categoryId) {
-
         return productRepository.findByCategoryIdAndStatus(
                 categoryId,
                 1
         );
     }
 
+    // Tìm kiếm sản phẩm
     public List<Product> search(String keyword) {
-
         return productRepository
                 .findByNameContainingIgnoreCase(keyword);
     }
 
+    // Thêm sản phẩm
     public Product create(Product product) {
 
         if (product.getSlug() != null &&
@@ -76,7 +87,8 @@ public class ProductService {
                             .orElseThrow(() ->
                                     new RuntimeException(
                                             "Danh mục không tồn tại"
-                                    ));
+                                    )
+                            );
 
             product.setCategory(category);
         }
@@ -84,12 +96,13 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    // Cập nhật sản phẩm
     public Product update(
             Integer id,
             Product product
     ) {
 
-        Product existing = getById(id);
+        Product existing = getProductById(id);
 
         existing.setName(product.getName());
         existing.setSlug(product.getSlug());
@@ -109,7 +122,8 @@ public class ProductService {
                             .orElseThrow(() ->
                                     new RuntimeException(
                                             "Danh mục không tồn tại"
-                                    ));
+                                    )
+                            );
 
             existing.setCategory(category);
         }
@@ -117,9 +131,10 @@ public class ProductService {
         return productRepository.save(existing);
     }
 
+    // Xóa sản phẩm
     public void delete(Integer id) {
 
-        Product product = getById(id);
+        Product product = getProductById(id);
 
         productRepository.delete(product);
     }
