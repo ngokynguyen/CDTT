@@ -30,9 +30,13 @@ public class CategoryService {
     }
 
     public Category getBySlug(String slug) {
-        return categoryRepository.findBySlug(slug)
+
+        return categoryRepository
+                .findBySlug(slug)
                 .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy danh mục"));
+                        new RuntimeException(
+                                "Không tìm thấy danh mục"
+                        ));
     }
 
     public List<Category> getByParentId(Integer parentId) {

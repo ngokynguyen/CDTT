@@ -2,6 +2,7 @@ package ngokynguyen.example.Controller;
 
 import ngokynguyen.example.Entity.Category;
 import ngokynguyen.example.Repository.CategoryRepository;
+import ngokynguyen.example.Service.CategoryService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,22 +12,28 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CategoryController {
 
-    private final CategoryRepository repository;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryRepository repository) {
-        this.repository = repository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
     public List<Category> getAll() {
-        return repository.findAll();
+        return categoryService.getAll();
     }
 
     @GetMapping("/{id}")
     public Category getById(
-            @PathVariable Integer id) {
+            @PathVariable("id") Integer id) {
 
-        return repository.findById(id)
-                .orElseThrow();
+        return categoryService.getById(id);
+    }
+
+    @GetMapping("/slug/{slug}")
+    public Category getBySlug(
+            @PathVariable("slug") String slug) {
+
+        return categoryService.getBySlug(slug);
     }
 }

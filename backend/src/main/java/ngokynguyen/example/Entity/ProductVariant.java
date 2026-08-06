@@ -1,5 +1,6 @@
 package ngokynguyen.example.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,29 +18,15 @@ public class ProductVariant {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Product product;
 
-    @Column(length = 10)
     private String size;
 
-    @Column(length = 30)
     private String color;
 
-    @Column(nullable = false)
-    private Integer quantity = 0;
+    private Integer quantity;
 
-    @Column(nullable = false)
-    private Integer status = 1;
-
-    @PrePersist
-    protected void onCreate() {
-        if (quantity == null) {
-            quantity = 0;
-        }
-
-        if (status == null) {
-            status = 1;
-        }
-    }
+    private Integer status;
 }

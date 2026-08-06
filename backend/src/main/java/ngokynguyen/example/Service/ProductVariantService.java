@@ -27,42 +27,27 @@ public class ProductVariantService {
     }
 
     public ProductVariant getById(Integer id) {
-
         return variantRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Không tìm thấy biến thể sản phẩm"
-                        ));
+                        new RuntimeException("Không tìm thấy Variant"));
     }
 
-    public List<ProductVariant> getByProductId(
-            Integer productId
-    ) {
-
-        return variantRepository.findByProductId(productId);
-    }
-
-    public List<ProductVariant> getActiveByProductId(
-            Integer productId
-    ) {
-
+    public List<ProductVariant> getByProduct(Integer productId) {
         return variantRepository.findByProductIdAndStatus(
                 productId,
                 1
         );
     }
 
-    public ProductVariant create(
-            Integer productId,
-            ProductVariant variant
-    ) {
+    public ProductVariant create(ProductVariant variant) {
+
+        Integer productId =
+                variant.getProduct().getId();
 
         Product product =
                 productRepository.findById(productId)
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Không tìm thấy sản phẩm"
-                                ));
+                                new RuntimeException("Không tìm thấy sản phẩm"));
 
         variant.setProduct(product);
 
@@ -71,17 +56,29 @@ public class ProductVariantService {
 
     public ProductVariant update(
             Integer id,
-            ProductVariant variant
+            ProductVariant data
     ) {
 
-        ProductVariant existing = getById(id);
+        ProductVariant variant = getById(id);
 
-        existing.setSize(variant.getSize());
-        existing.setColor(variant.getColor());
-        existing.setQuantity(variant.getQuantity());
-        existing.setStatus(variant.getStatus());
+        variant.setSize(data.getSize());
+        variant.setColor(data.getColor());
+        variant.setQuantity(data.getQuantity());
+        variant.setStatus(data.getStatus());
 
-        return variantRepository.save(existing);
+        if (data.getProduct() != null) {
+
+            Product product =
+                    productRepository.findById(
+                                    data.getProduct().getId()
+                            )
+                            .orElseThrow(() ->
+                                    new RuntimeException("Không tìm thấy sản phẩm"));
+
+            variant.setProduct(product);
+        }
+
+        return variantRepository.save(variant);
     }
 
     public void delete(Integer id) {
@@ -91,25 +88,4 @@ public class ProductVariantService {
         variantRepository.delete(variant);
     }
 
-    public void decreaseQuantity(
-            Integer variantId,
-            Integer quantity
-    ) {
-
-        ProductVariant variant =
-                getById(variantId);
-
-        if (variant.getQuantity() < quantity) {
-
-            throw new RuntimeException(
-                    "Sản phẩm không đủ số lượng"
-            );
-        }
-
-        variant.setQuantity(
-                variant.getQuantity() - quantity
-        );
-
-        variantRepository.save(variant);
-    }
 }
